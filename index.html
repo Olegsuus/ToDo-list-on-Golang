@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление задачами</title>
+    <!--Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class= "mb-4"> Управление задачами</h2>
+    <div class="actions mb-4">
+        <button class="btn btn-primary show-tasks">Показать все задачи</button>
+        <button class="btn btn-success add-task">Добавить новую задачу</button>
+        <button class="btn btn-warning update-task">Изменить задачу</button>
+        <button class= "btn btn-danger delete-task">Удалить задачу</button>
+    </div>
+    <div id="taskForm" style="display: none;">
+        <!--Форма добавления задачи-->
+        <form action="/tasks" method="post">
+            <div class="form-group">
+                <label for="title">Заголовок:</label>
+                <input type="text" class="form-control" name="title" id="title">
+            </div>
+            <div class="form-group">
+                <label for="description">Описание:</label>
+                <input type="text" class="form-control" name="description" id="description">
+            </div>
+            <div class="form-group">
+                <label for="category_id">Категория(число):</label>
+                <input type="number" class="form-control" name="category_id" id="category_id">
+            </div>            
+            <button type="submit" class="btn btn-success">Добавить задачу</button>
+        </form>
+    </div>
+    <div id="tasksList" style="display: none;">
+        <h3>Список задач</h3>
+        <ul id="tasks"></ul>
+    </div>    
+    <div id="updateForm" style="display: none;">
+        <!--Форма изменения задачи-->
+        <form action="/tasks/update" method="post">
+            <div class="form-group">
+                <input type="hidden" name="id" id="updateId">
+                <label for="updateTitle">Новый заголовок:</label>
+                <input type="text" class="form-control" name="title" id="updateTitle">
+            </div>
+            <div class="form-group">
+                <label for="updateDescription">Новое описание:</label>
+                <input type="text" class="form-control" name="description" id="updateDescription">
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="completed" value="true"> Завершено</label>
+            </div>            
+            <button type="submit" class="btn btn-warning">Изменить задачу</button>
+        </form>
+    </div>
+    <div id="deleteForm" style="display: none;">
+        <!--Форма удаления задачи-->
+        <form id="deleteTaskForm" action="/tasks/delete" method="post">
+            <div class="form-group">
+                <label for="deleteId">ID задачи для удаления:</label>
+                <input type="number" class="form-control" name="id" id="deleteId">
+            </div>
+            <button type="submit" class="btn btn-danger">Удалить задачу</button>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap и jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+    $('.show-tasks').click(function(){
+        $.get('/api/tasks', function(tasks){
+            $('#tasks').empty(); // Обратите внимание, что мы очищаем #tasks, а не #tasksList
+            tasks.forEach(function(task) {
+                $('#tasks').append(`<li>ID: ${task.ID}, Название: ${task.Title}, Описание: ${task.Description}, Категория: ${task.CategoryID}, Выполнено: ${task.Completed ? 'Да' : 'Нет'}</li>`);
+            });
+            $('#tasksList').show(); // Показываем контейнер списка задач
+        }).fail(function(){
+            alert('Ошибка при получении списка задач');
+        });
+    });
+  
+    // Открыть форму добавления задачи
+    $('.add-task').click(function(){
+        $('#taskForm').show();
+        $('#tasksList').hide();
+        $('#updateForm').hide();
+        $('#deleteForm').hide();
+    });
+
+    // Открыть форму изменения задачи
+    $('.update-task').click(function(){
+        // Здесь можно добавить логику для заполнения формы обновления данными
+        $('#updateForm').show();
+        $('#taskForm').hide();
+        $('#tasksList').hide();
+        $('#deleteForm').hide();
+    });
+
+    // Открыть форму удаления задачи
+    $('.delete-task').click(function(){
+        $('#deleteForm').show();
+        $('#taskForm').hide();
+        $('#updateForm').hide();
+        $('#tasksList').hide();
+    });
+});
+</script>
+    

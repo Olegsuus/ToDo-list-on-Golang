@@ -5,12 +5,13 @@ import (
 )
 
 type Tasks struct {
-	ID          int
-	Title       string
-	Description string
-	CategoryID  int
-	Completed   bool
+	ID          int    `db:"idTask"` // Указываем, что ID соответствует колонке idTask в БД
+	Title       string `db:"title"`
+	Description string `db:"description"`
+	CategoryID  int    `db:"category_id"`
+	Completed   bool   `db:"completed"`
 }
+
 
 // Создаем новую задачу
 func CreateTask(db *sql.DB, title string, description string, categoryID int) error {
